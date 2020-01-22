@@ -1,3 +1,5 @@
+# Inventory Manager
+
 ## Overview
 Inventory manager is an application which manages an inventory of products. The application will enable the user 
 to view the products they have in their inventory, add new products to their inventory, mark items as discontinued, calculate their 
