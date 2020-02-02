@@ -20,6 +20,7 @@ namespace InventoryManager.Controllers
             this.signInManager = signInManager;
         }
 
+
         public IActionResult Register() 
         {
             return View();
@@ -35,10 +36,12 @@ namespace InventoryManager.Controllers
 
                 if (result.Succeeded)
                 {
+                    // signs in user and creates a session cookie
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
 
+                // if unsuccessful in creating the user
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
@@ -46,6 +49,39 @@ namespace InventoryManager.Controllers
             }
 
             return View(registerViewModel);
+        }
+
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RememberMe, false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // if unsuccessful login
+                ModelState.AddModelError(string.Empty, "Invalid login attempt");
+            }
+
+            return View(loginViewModel);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

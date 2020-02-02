@@ -1,7 +1,16 @@
-﻿@{
+﻿@inject SignInManager<IdentityUser> signInManager;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Hello, World!</h1>
-</div>
+    <div class="text-center">
+        @if (signInManager.IsSignedIn(User))
+        {
+            <h1 class="display-4">Hello, @User.Identity.Name!</h1>
+        }
+        else
+        {
+            <h1 class="display-4">Hello, World!</h1>
+        }
+    </div>

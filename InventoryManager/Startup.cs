@@ -28,8 +28,12 @@ namespace InventoryManager
         {
             services.AddDbContextPool<InventoryManagerDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<InventoryManagerDbContext>();
+
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 8;
+            }).AddEntityFrameworkStores<InventoryManagerDbContext>();
+
             services.AddControllersWithViews();
         }
 
