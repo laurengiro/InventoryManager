@@ -1,0 +1,15 @@
+﻿@model List<InventoryManager.Models.Item>
+
+<h1>@ViewBag.title</h1>
+
+<form method="post">
+
+    @foreach (var item in Model)
+    {
+        <input type="checkbox" name="itemIds" id="@item.ID" value="@item.ID" />
+        <label for="@item.ID">@item.Description</label>
+        <br />
+    }
+
+    <input type="submit" value="Remove Selected Item(s)" />
+</form>

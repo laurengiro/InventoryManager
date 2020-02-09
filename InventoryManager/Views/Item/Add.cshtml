@@ -1,0 +1,30 @@
+﻿@model InventoryManager.ViewModels.AddItemViewModel
+
+<h1>Add Item</h1>
+
+<form asp-controller="Item" asp-action="Add" method="post">
+
+    <div class="form-group">
+        <label asp-for="SKU"></label>
+        <input class="form-control" asp-for="SKU" />
+        <span asp-validation-for="SKU"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <input class="form-control" asp-for="Description" />
+        <span asp-validation-for="Description"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="QuantityOnHand"></label>
+        <input class="form-control" asp-for="QuantityOnHand" />
+        <span asp-validation-for="QuantityOnHand"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UnitCost"></label>
+        <input class="form-control" asp-for="UnitCost" />
+        <span asp-validation-for="UnitCost"></span>
+    </div>
+
+    <input type="submit" value="Add Item" />
+
+</form>

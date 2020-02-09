@@ -1,0 +1,12 @@
+﻿@model List<InventoryManager.Models.Supplier>
+
+<h1>Suppliers</h1>
+
+<ul>
+    @foreach (var supplier in Model)
+    {
+        <li>@supplier.Name</li>
+    }
+</ul>
+
+<p><a asp-controller="Supplier" asp-action="Add">Add Supplier</a></p>
