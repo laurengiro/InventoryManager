@@ -24,6 +24,10 @@
         <input class="form-control" asp-for="UnitCost" />
         <span asp-validation-for="UnitCost"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="SupplierID"></label>
+        <select asp-for="SupplierID" asp-items="Model.Suppliers"></select>
+    </div>
 
     <input type="submit" value="Add Item" />
 

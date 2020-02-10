@@ -39,7 +39,8 @@ namespace InventoryManager.Controllers
                 // Add the new supplier to the list of suppliers
                 Supplier newSupplier = new Supplier
                 {
-                    Name = addSupplierViewModel.Name
+                    Name = addSupplierViewModel.Name,
+                    Country = addSupplierViewModel.Country
                 };
 
                 context.Suppliers.Add(newSupplier);

@@ -1,6 +1,6 @@
 ﻿@model List<InventoryManager.Models.Item>
 
-<h1>@ViewBag.Title</h1>
+<h1>Inventory Items</h1>
 
 <table class="table">
 
@@ -9,6 +9,7 @@
         <th>Description</th>
         <th>Quantity on Hand</th>
         <th>Unit Cost</th>
+        <th>Item Total Value</th>
         <th>Supplier</th>
     </tr>
 
@@ -18,7 +19,8 @@
             <td>@item.SKU</td>
             <td>@item.Description</td>
             <td>@item.QuantityOnHand</td>
-            <td>@item.UnitCost</td>
+            <td>@String.Format("{0:C}", item.UnitCost)</td>
+            <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
             <td>@item.Supplier.Name</td>
         </tr>
     }

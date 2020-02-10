@@ -23,13 +23,13 @@ namespace InventoryManager.Controllers
 
         public IActionResult Index()
         {
-            IList<Item> items = context.Items.Include(i => i.Supplier).ToList();
+            IList<Item> items = context.Items.Include(s => s.Supplier).ToList();
             return View(items);
         }
 
         public IActionResult Add()
         {
-            AddItemViewModel addItemViewModel = new AddItemViewModel();
+            AddItemViewModel addItemViewModel = new AddItemViewModel(context.Suppliers.ToList());
             return View(addItemViewModel);
         }
 
@@ -47,6 +47,7 @@ namespace InventoryManager.Controllers
                     Description = addItemViewModel.Description,
                     QuantityOnHand = addItemViewModel.QuantityOnHand,
                     UnitCost = addItemViewModel.UnitCost,
+                    SKUTotalValue = addItemViewModel.QuantityOnHand * addItemViewModel.UnitCost,
                     Supplier = newItemSupplier
                 };
 
