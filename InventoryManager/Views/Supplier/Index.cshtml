@@ -7,14 +7,16 @@
     <tr>
         <th>Supplier Name</th>
         <th>Country</th>
+        <th></th>
     </tr>
 
     @foreach (var supplier in Model)
     {
-        <tr>
-            <td>@supplier.Name</td>
-            <td>@supplier.Country</td>
-        </tr>
+    <tr>
+        <td>@supplier.Name</td>
+        <td>@supplier.Country</td>
+        <td><a asp-action="Edit" asp-controller="Supplier" asp-route-id="@supplier.ID">Edit</a></td>
+    </tr>
     }
 </table>
 
@@ -23,4 +25,4 @@
     <p>No suppliers yet!</p>
 }
 
-<p><a asp-controller="Supplier" asp-action="Add">Add Supplier</a></p>
+<p><a asp-controller="Supplier" asp-action="Add">Add Supplier</a> | <a asp-controller="Supplier" asp-action="Remove">Remove Supplier</a></p>
