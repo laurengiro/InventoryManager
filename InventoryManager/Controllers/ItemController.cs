@@ -40,7 +40,7 @@ namespace InventoryManager.Controllers
             {
                 Supplier newItemSupplier =
                     context.Suppliers.Single(s => s.ID == addItemViewModel.SupplierID);
-                // Add the new cheese to my existing cheeses
+                // Add the new supplier to my existing suppliers
                 Item newItem = new Item
                 {
                     SKU = addItemViewModel.SKU,
@@ -60,6 +60,43 @@ namespace InventoryManager.Controllers
             return View(addItemViewModel);
         }
 
+        public IActionResult Edit(int id)
+        {
+            Item theItem = context.Items.Single(i => i.ID == id);
+            EditItemViewModel editItemViewModel = new EditItemViewModel(context.Suppliers.ToList())
+            {
+                ID = theItem.ID,
+                SKU = theItem.SKU,
+                Description = theItem.Description,
+                QuantityOnHand = theItem.QuantityOnHand,
+                UnitCost = theItem.UnitCost,
+                SupplierID = theItem.SupplierID
+            };
+            return View(editItemViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditItemViewModel editItemViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Item updateItem = context.Items.Single(i => i.ID == editItemViewModel.ID);
+                updateItem.SKU = editItemViewModel.SKU;
+                updateItem.Description = editItemViewModel.Description;
+                updateItem.QuantityOnHand = editItemViewModel.QuantityOnHand;
+                updateItem.UnitCost = editItemViewModel.UnitCost;
+                updateItem.SKUTotalValue = editItemViewModel.QuantityOnHand * editItemViewModel.UnitCost;
+                updateItem.Supplier = context.Suppliers.Single(s => s.ID == editItemViewModel.SupplierID);
+
+                context.Update(updateItem);
+                context.SaveChanges();
+
+                return Redirect("/Item");
+            }
+
+            return View(editItemViewModel);
+        }
+
         public IActionResult Remove()
         {
             ViewBag.title = "Remove Items";
@@ -72,13 +109,13 @@ namespace InventoryManager.Controllers
         {
             foreach (int itemId in itemIds)
             {
-                Item theItem = context.Items.Single(c => c.ID == itemId);
+                Item theItem = context.Items.Single(i => i.ID == itemId);
                 context.Items.Remove(theItem);
             }
 
             context.SaveChanges();
 
-            return Redirect("/");
+            return Redirect("/Item");
         }
     }
 }

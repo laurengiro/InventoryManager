@@ -11,6 +11,7 @@
         <th>Unit Cost</th>
         <th>Item Total Value</th>
         <th>Supplier</th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -22,6 +23,7 @@
             <td>@String.Format("{0:C}", item.UnitCost)</td>
             <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
             <td>@item.Supplier.Name</td>
+            <td><a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a></td>
         </tr>
     }
 </table>
