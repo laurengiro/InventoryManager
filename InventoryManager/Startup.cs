@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InventoryManager.Data;
+using InventoryManager.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +37,15 @@ namespace InventoryManager
             }).AddEntityFrameworkStores<InventoryManagerDbContext>();
 
             services.AddControllersWithViews();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AccessItemPolicy",
+                    policy => policy.AddRequirements(new ManageItemAccessRequirement()));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, CanViewOnlyCompanysItemsHandler>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

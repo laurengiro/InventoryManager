@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using InventoryManager.Security;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,8 +12,11 @@ namespace InventoryManager.ViewModels
     {
         [Required]
         [EmailAddress]
-        [Remote(action: "IsEmailInUse", controller:"Account")]
+        [Remote(action: "IsEmailInUse", controller: "Account")]
         public string Email { get; set; }
+
+        [Required]
+        public string Company { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -22,5 +26,12 @@ namespace InventoryManager.ViewModels
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
+
+        public List<UserClaim> Claims { get; set; }
+
+        public RegisterViewModel()
+        {
+            Claims = new List<UserClaim>();
+        }
     }
 }

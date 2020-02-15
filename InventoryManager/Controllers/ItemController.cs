@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace InventoryManager.Controllers
@@ -48,6 +49,8 @@ namespace InventoryManager.Controllers
                     QuantityOnHand = addItemViewModel.QuantityOnHand,
                     UnitCost = addItemViewModel.UnitCost,
                     SKUTotalValue = addItemViewModel.QuantityOnHand * addItemViewModel.UnitCost,
+                    //ADDED FOR CLAIMS
+                    Company = User.Claims.FirstOrDefault(c => c.Type == "Company").Value,
                     Supplier = newItemSupplier
                 };
 
@@ -97,6 +100,8 @@ namespace InventoryManager.Controllers
             return View(editItemViewModel);
         }
 
+        //ADDED FOR CLAIMS
+        [Authorize(Policy = "AccessItemPolicy")]
         public IActionResult Remove()
         {
             ViewBag.title = "Remove Items";

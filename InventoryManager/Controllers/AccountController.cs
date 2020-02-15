@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace InventoryManager.Controllers
@@ -38,6 +39,8 @@ namespace InventoryManager.Controllers
                 {
                     // signs in user and creates a session cookie
                     await signInManager.SignInAsync(user, isPersistent: false);
+                    //ADDED FOR CLAIMS
+                    await userManager.AddClaimAsync(user, new Claim("Company", registerViewModel.Company));
                     return RedirectToAction("Index", "Home");
                 }
 

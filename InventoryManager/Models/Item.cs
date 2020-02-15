@@ -13,6 +13,7 @@ namespace InventoryManager.Models
         public int QuantityOnHand { get; set; }
         public decimal UnitCost { get; set; }
         public decimal SKUTotalValue { get; set; }
+        public string Company { get; set; }
 
         public int SupplierID { get; set; }
         public Supplier Supplier { get; set; }
