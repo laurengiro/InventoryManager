@@ -1,6 +1,9 @@
-﻿@model List<InventoryManager.Models.Item>
+﻿@using Microsoft.AspNetCore.Authorization
+@using InventoryManager.Security
+@model List<InventoryManager.Models.Item>
+@inject IAuthorizationService AuthorizationService
 
-<h1>Inventory Items</h1>
+<h1>@User.Claims.FirstOrDefault(c => c.Type == "Company").Value's Inventory Items</h1>
 
 <table class="table">
 
@@ -14,17 +17,24 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.SKU</td>
-            <td>@item.Description</td>
-            <td>@item.QuantityOnHand</td>
-            <td>@String.Format("{0:C}", item.UnitCost)</td>
-            <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
-            <td>@item.Supplier.Name</td>
-            <td><a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a></td>
-        </tr>
+    @{
+        var requirement = new ManageItemAccessRequirement();
+        foreach (var item in Model)
+        {
+            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, item, requirement);
+            if (authorizationResult.Succeeded)
+            {
+                <tr>
+                    <td>@item.SKU</td>
+                    <td>@item.Description</td>
+                    <td>@item.QuantityOnHand</td>
+                    <td>@String.Format("{0:C}", item.UnitCost)</td>
+                    <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
+                    <td>@item.Supplier.Name</td>
+                    <td><a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a></td>
+                </tr>
+            }
+        }
     }
 </table>
 

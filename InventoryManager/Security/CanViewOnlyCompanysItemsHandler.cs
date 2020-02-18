@@ -12,16 +12,12 @@ namespace InventoryManager.Security
 {
     public class CanViewOnlyCompanysItemsHandler : AuthorizationHandler<ManageItemAccessRequirement, Item>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ManageItemAccessRequirement requirement, Item resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, 
+            ManageItemAccessRequirement requirement, 
+            Item resource)
         {
-            var authFilterContext = context.Resource as AuthorizationFilterContext;
-            if (authFilterContext == null)
-            {
-                return Task.CompletedTask;
-            }
 
-            //if (resource.Company.ToLower() == context.User.FindFirst(ClaimTypes.Company).Value)
-            if (resource.Company.ToLower() == context.User.FindFirst("Company").Value.ToLower())
+            if (resource.Company.ToLower() == context.User.Claims.FirstOrDefault(c => c.Type == "Company").Value.ToLower())
             {
                 context.Succeed(requirement);
             }

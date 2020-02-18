@@ -39,7 +39,6 @@ namespace InventoryManager.Controllers
                 {
                     // signs in user and creates a session cookie
                     await signInManager.SignInAsync(user, isPersistent: false);
-                    //ADDED FOR CLAIMS
                     await userManager.AddClaimAsync(user, new Claim("Company", registerViewModel.Company));
                     return RedirectToAction("Index", "Home");
                 }

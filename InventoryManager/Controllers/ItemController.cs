@@ -41,7 +41,7 @@ namespace InventoryManager.Controllers
             {
                 Supplier newItemSupplier =
                     context.Suppliers.Single(s => s.ID == addItemViewModel.SupplierID);
-                // Add the new supplier to my existing suppliers
+                // Add the new item to my existing items
                 Item newItem = new Item
                 {
                     SKU = addItemViewModel.SKU,
@@ -49,7 +49,6 @@ namespace InventoryManager.Controllers
                     QuantityOnHand = addItemViewModel.QuantityOnHand,
                     UnitCost = addItemViewModel.UnitCost,
                     SKUTotalValue = addItemViewModel.QuantityOnHand * addItemViewModel.UnitCost,
-                    //ADDED FOR CLAIMS
                     Company = User.Claims.FirstOrDefault(c => c.Type == "Company").Value,
                     Supplier = newItemSupplier
                 };
@@ -101,7 +100,7 @@ namespace InventoryManager.Controllers
         }
 
         //ADDED FOR CLAIMS
-        [Authorize(Policy = "AccessItemPolicy")]
+        //[Authorize(Policy = "AccessItemPolicy")]
         public IActionResult Remove()
         {
             ViewBag.title = "Remove Items";

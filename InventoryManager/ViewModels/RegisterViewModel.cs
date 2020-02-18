@@ -27,11 +27,5 @@ namespace InventoryManager.ViewModels
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
 
-        public List<UserClaim> Claims { get; set; }
-
-        public RegisterViewModel()
-        {
-            Claims = new List<UserClaim>();
-        }
     }
 }
