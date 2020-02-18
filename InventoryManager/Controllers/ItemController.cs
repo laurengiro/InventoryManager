@@ -1,5 +1,6 @@
 ﻿using InventoryManager.Data;
 using InventoryManager.Models;
+using InventoryManager.Security;
 using InventoryManager.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace InventoryManager.Controllers
     public class ItemController : Controller
     {
         private InventoryManagerDbContext context;
+        IAuthorizationService _authorizationService;
 
-        public ItemController(InventoryManagerDbContext dbContext)
+        public ItemController(InventoryManagerDbContext dbContext, IAuthorizationService authorizationService)
         {
             context = dbContext;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
@@ -62,19 +65,34 @@ namespace InventoryManager.Controllers
             return View(addItemViewModel);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             Item theItem = context.Items.Single(i => i.ID == id);
-            EditItemViewModel editItemViewModel = new EditItemViewModel(context.Suppliers.ToList())
+
+            if (theItem ==  null)
             {
-                ID = theItem.ID,
-                SKU = theItem.SKU,
-                Description = theItem.Description,
-                QuantityOnHand = theItem.QuantityOnHand,
-                UnitCost = theItem.UnitCost,
-                SupplierID = theItem.SupplierID
-            };
-            return View(editItemViewModel);
+                return new NotFoundResult();
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, theItem, new ManageItemAccessRequirement());
+            if (authorizationResult.Succeeded)
+            {
+                EditItemViewModel editItemViewModel = new EditItemViewModel(context.Suppliers.ToList())
+                {
+                    ID = theItem.ID,
+                    SKU = theItem.SKU,
+                    Description = theItem.Description,
+                    QuantityOnHand = theItem.QuantityOnHand,
+                    UnitCost = theItem.UnitCost,
+                    SupplierID = theItem.SupplierID
+                };
+                return View(editItemViewModel);
+            }
+            else
+            {
+                return new ForbidResult();
+            }
+            
         }
 
         [HttpPost]
@@ -99,8 +117,6 @@ namespace InventoryManager.Controllers
             return View(editItemViewModel);
         }
 
-        //ADDED FOR CLAIMS
-        //[Authorize(Policy = "AccessItemPolicy")]
         public IActionResult Remove()
         {
             ViewBag.title = "Remove Items";

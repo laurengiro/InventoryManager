@@ -1,14 +1,24 @@
-﻿@model List<InventoryManager.Models.Item>
+﻿@using Microsoft.AspNetCore.Authorization
+@using InventoryManager.Security
+@model List<InventoryManager.Models.Item>
+@inject IAuthorizationService AuthorizationService
 
 <h1>@ViewBag.title</h1>
 
 <form method="post">
 
-    @foreach (var item in Model)
-    {
-        <input type="checkbox" name="itemIds" id="@item.ID" value="@item.ID" />
-        <label for="@item.ID">@item.Description</label>
-        <br />
+    @{
+        var requirement = new ManageItemAccessRequirement();
+        foreach (var item in Model)
+        {
+            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, item, requirement);
+            if (authorizationResult.Succeeded)
+            {
+                <input type="checkbox" name="itemIds" id="@item.ID" value="@item.ID" />
+                <label for="@item.ID">@item.Description</label>
+                <br />
+            }
+        }
     }
 
     <input type="submit" value="Remove Selected Item(s)" />
