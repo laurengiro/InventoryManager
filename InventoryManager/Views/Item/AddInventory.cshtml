@@ -1,0 +1,51 @@
+﻿@model InventoryManager.ViewModels.AddInventoryViewModel
+
+<h1>Add Inventory to @Model.SKU</h1>
+
+
+<form asp-controller="Item" asp-action="AddInventory" method="post">
+
+    <input hidden asp-for="ID" />
+    <input hidden asp-for="SupplierID" />
+    <input hidden asp-for="SKU" />
+    <input hidden asp-for="Description" />
+    <input hidden asp-for="QuantityOnHand" />
+    <input hidden asp-for="UnitCost" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <table class="table">
+
+        <tr>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Quantity on Hand</th>
+            <th>Unit Cost</th>
+            <th>Inventory to Add</th>
+            <th>Cost of New Inventory</th>
+        </tr>
+
+        <tr>
+            <td>@Model.SKU</td>
+            <td>@Model.Description</td>
+            <td>@Model.QuantityOnHand</td>
+            <td>@String.Format("{0:C}", Model.UnitCost)</td>
+            <td>
+                <div class="form-group">
+                    <input class="form-control" asp-for="ToAddQuantity" />
+                    <span asp-validation-for="ToAddQuantity"></span>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input class="form-control" asp-for="ToAddUnitCost" />
+                    <span asp-validation-for="ToAddUnitCost"></span>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+    <input type="submit" value="Add Inventory" />
+    <a asp-controller="Item" asp-action="Index" class="btn">Cancel</a>
+
+</form>

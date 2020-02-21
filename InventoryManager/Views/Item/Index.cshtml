@@ -8,10 +8,10 @@
 <table class="table">
 
     <tr>
-        <th>Name</th>
+        <th>SKU</th>
         <th>Description</th>
         <th>Quantity on Hand</th>
-        <th>Unit Cost</th>
+        <th>Average Unit Cost</th>
         <th>Item Total Value</th>
         <th>Supplier</th>
         <th></th>
@@ -31,7 +31,8 @@
                     <td>@String.Format("{0:C}", item.UnitCost)</td>
                     <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
                     <td>@item.Supplier.Name</td>
-                    <td><a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a></td>
+                    <td><a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a> | 
+                        <a asp-action="AddInventory" asp-controller="Item" asp-route-id="@item.ID">Add Inventory</a></td>
                 </tr>
             }
         }
@@ -43,4 +44,5 @@
     <p>No items yet!</p>
 }
 
-<p><a asp-controller="Item" asp-action="Add">Add Item</a> | <a asp-controller="Item" asp-action="Remove">Remove Item</a></p>
+<p><a asp-controller="Item" asp-action="Add">Add Item</a> | <a asp-controller="Item" asp-action="DeleteMultiple">Delete Multiple Items</a></p>
+@*<p><a asp-controller="Item" asp-action="AddInventory">Add Inventory to Items</a></p>*@

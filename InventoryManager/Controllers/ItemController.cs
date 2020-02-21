@@ -117,15 +117,15 @@ namespace InventoryManager.Controllers
             return View(editItemViewModel);
         }
 
-        public IActionResult Remove()
+        public IActionResult DeleteMultiple()
         {
-            ViewBag.title = "Remove Items";
+            ViewBag.title = "Delete Items";
             IList<Item> items = context.Items.ToList();
             return View(items);
         }
 
         [HttpPost]
-        public IActionResult Remove(int[] itemIds)
+        public IActionResult DeleteMultiple(int[] itemIds)
         {
             foreach (int itemId in itemIds)
             {
@@ -136,6 +136,58 @@ namespace InventoryManager.Controllers
             context.SaveChanges();
 
             return Redirect("/Item");
+        }
+
+
+        public async Task<IActionResult> AddInventory(int id)
+        {
+            Item theItem = context.Items.Single(i => i.ID == id);
+
+            if (theItem == null)
+            {
+                return new NotFoundResult();
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, theItem, new ManageItemAccessRequirement());
+            if (authorizationResult.Succeeded)
+            {
+                AddInventoryViewModel addInventoryViewModel = new AddInventoryViewModel()
+                {
+                    ID = theItem.ID,
+                    SKU = theItem.SKU,
+                    Description = theItem.Description,
+                    QuantityOnHand = theItem.QuantityOnHand,
+                    UnitCost = theItem.UnitCost,
+                    SupplierID = theItem.SupplierID
+                };
+                return View(addInventoryViewModel);
+            }
+            else
+            {
+                return new ForbidResult();
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult AddInventory(AddInventoryViewModel addInventoryViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Item updateItem = context.Items.Single(i => i.ID == addInventoryViewModel.ID);
+                int totalUnits = addInventoryViewModel.QuantityOnHand + addInventoryViewModel.ToAddQuantity;
+                updateItem.QuantityOnHand = totalUnits;
+                updateItem.UnitCost = ((decimal)addInventoryViewModel.QuantityOnHand / totalUnits) * addInventoryViewModel.UnitCost 
+                    + ((decimal)addInventoryViewModel.ToAddQuantity / totalUnits) * addInventoryViewModel.ToAddUnitCost;
+                updateItem.SKUTotalValue = addInventoryViewModel.QuantityOnHand * addInventoryViewModel.UnitCost + addInventoryViewModel.ToAddQuantity * addInventoryViewModel.ToAddUnitCost;
+
+                context.Update(updateItem);
+                context.SaveChanges();
+
+                return Redirect("/Item");
+            }
+
+            return View(addInventoryViewModel);
         }
     }
 }
