@@ -14,6 +14,7 @@ namespace InventoryManager.Models
         public decimal UnitCost { get; set; }
         public decimal SKUTotalValue { get; set; }
         public string Company { get; set; }
+        public bool Discontinued { get; set; }
 
         public int SupplierID { get; set; }
         public Supplier Supplier { get; set; }

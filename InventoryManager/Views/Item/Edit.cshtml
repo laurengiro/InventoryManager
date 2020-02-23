@@ -5,6 +5,7 @@
 <form asp-controller="Item" asp-action="Edit" method="post">
 
     <input hidden asp-for="ID"/>
+
     <div class="form-group">
         <label asp-for="SKU"></label>
         <input class="form-control" asp-for="SKU" />
@@ -16,21 +17,11 @@
         <span asp-validation-for="Description"></span>
     </div>
     <div class="form-group">
-        <label asp-for="QuantityOnHand"></label>
-        <input class="form-control" asp-for="QuantityOnHand" />
-        <span asp-validation-for="QuantityOnHand"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="UnitCost"></label>
-        <input class="form-control" asp-for="UnitCost" />
-        <span asp-validation-for="UnitCost"></span>
-    </div>
-    <div class="form-group">
         <label asp-for="SupplierID"></label>
         <select asp-for="SupplierID" asp-items="Model.Suppliers"></select>
     </div>
 
-    <input type="submit" value="Update Item" />
-    <a asp-controller="Item" asp-action="Index" class="btn">Cancel</a>
+    <input type="submit" value="Update Item" class="btn btn-primary" />
+    <a asp-controller="Item" asp-action="Index" class="btn btn-danger">Cancel</a>
 
 </form>

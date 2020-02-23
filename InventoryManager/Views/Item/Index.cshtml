@@ -5,44 +5,100 @@
 
 <h1>@User.Claims.FirstOrDefault(c => c.Type == "Company").Value's Inventory Items</h1>
 
-<table class="table">
 
-    <tr>
-        <th>SKU</th>
-        <th>Description</th>
-        <th>Quantity on Hand</th>
-        <th>Average Unit Cost</th>
-        <th>Item Total Value</th>
-        <th>Supplier</th>
-        <th></th>
-    </tr>
+@if (Model.Where(i => i.Discontinued == false).ToList().Count > 0)
+{
+    <h3>Active Items</h3>
+    <table class="table">
 
-    @{
-        var requirement = new ManageItemAccessRequirement();
-        foreach (var item in Model)
-        {
-            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, item, requirement);
-            if (authorizationResult.Succeeded)
+        <tr>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Quantity on Hand</th>
+            <th>Average Unit Cost</th>
+            <th>Item Total Value</th>
+            <th>Supplier</th>
+            <th></th>
+        </tr>
+
+
+        @{
+            var requirement = new ManageItemAccessRequirement();
+            foreach (var item in Model.Where(i => i.Discontinued == false).ToList())
             {
-                <tr>
-                    <td>@item.SKU</td>
-                    <td>@item.Description</td>
-                    <td>@item.QuantityOnHand</td>
-                    <td>@String.Format("{0:C}", item.UnitCost)</td>
-                    <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
-                    <td>@item.Supplier.Name</td>
-                    <td><a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a> | 
-                        <a asp-action="AddInventory" asp-controller="Item" asp-route-id="@item.ID">Add Inventory</a></td>
-                </tr>
+                var authorizationResult = await AuthorizationService.AuthorizeAsync(User, item, requirement);
+                if (authorizationResult.Succeeded)
+                {
+                    <tr>
+                        <td>@item.SKU</td>
+                        <td>@item.Description</td>
+                        <td>@item.QuantityOnHand</td>
+                        <td>@String.Format("{0:C}", item.UnitCost)</td>
+                        <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
+                        <td>@item.Supplier.Name</td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-action="AddInventory" asp-controller="Item" asp-route-id="@item.ID">Add Inventory</a>
+                        </td>
+                    </tr>
+                }
             }
         }
-    }
-</table>
+    </table>
+    <p><a asp-controller="Item" asp-action="MarkDiscontinued" class="btn btn-warning">Mark Item(s) Discontinued</a></p>
+}
+
+@if (Model.Where(i => i.Discontinued == true).ToList().Count > 0)
+{
+    <h3>Discontinued Items</h3>
+    <table class="table">
+
+        <tr>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Quantity on Hand</th>
+            <th>Average Unit Cost</th>
+            <th>Item Total Value</th>
+            <th>Supplier</th>
+            <th></th>
+        </tr>
+
+
+        @{
+            var requirement = new ManageItemAccessRequirement();
+            foreach (var item in Model.Where(i => i.Discontinued == true).ToList())
+            {
+                var authorizationResult = await AuthorizationService.AuthorizeAsync(User, item, requirement);
+                if (authorizationResult.Succeeded)
+                {
+                    <tr>
+                        <td>@item.SKU</td>
+                        <td>@item.Description</td>
+                        <td>@item.QuantityOnHand</td>
+                        <td>@String.Format("{0:C}", item.UnitCost)</td>
+                        <td>@String.Format("{0:C}", item.SKUTotalValue)</td>
+                        <td>@item.Supplier.Name</td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-action="AddInventory" asp-controller="Item" asp-route-id="@item.ID">Add Inventory</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+}
+
 
 @if (Model.Count == 0)
 {
     <p>No items yet!</p>
 }
 
-<p><a asp-controller="Item" asp-action="Add">Add Item</a> | <a asp-controller="Item" asp-action="DeleteMultiple">Delete Multiple Items</a></p>
-@*<p><a asp-controller="Item" asp-action="AddInventory">Add Inventory to Items</a></p>*@
+<p>
+    <a asp-controller="Item" asp-action="Add" class="btn btn-primary">Add Item</a>
+    @if (Model.Count > 0)
+    {
+        <a asp-controller="Item" asp-action="DeleteMultiple" class="btn btn-danger">Delete Items</a>
+    }
+</p>

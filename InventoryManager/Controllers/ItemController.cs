@@ -25,10 +25,19 @@ namespace InventoryManager.Controllers
             _authorizationService = authorizationService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             IList<Item> items = context.Items.Include(s => s.Supplier).ToList();
-            return View(items);
+            IList<Item> usersItems = new List<Item>();
+            foreach (Item item in items)
+            {
+                var authorizationResult = await _authorizationService.AuthorizeAsync(User, item, new ManageItemAccessRequirement());
+                if (authorizationResult.Succeeded)
+                {
+                    usersItems.Add(item);
+                }
+            }
+            return View(usersItems);
         }
 
         public IActionResult Add()
@@ -82,8 +91,6 @@ namespace InventoryManager.Controllers
                     ID = theItem.ID,
                     SKU = theItem.SKU,
                     Description = theItem.Description,
-                    QuantityOnHand = theItem.QuantityOnHand,
-                    UnitCost = theItem.UnitCost,
                     SupplierID = theItem.SupplierID
                 };
                 return View(editItemViewModel);
@@ -103,9 +110,6 @@ namespace InventoryManager.Controllers
                 Item updateItem = context.Items.Single(i => i.ID == editItemViewModel.ID);
                 updateItem.SKU = editItemViewModel.SKU;
                 updateItem.Description = editItemViewModel.Description;
-                updateItem.QuantityOnHand = editItemViewModel.QuantityOnHand;
-                updateItem.UnitCost = editItemViewModel.UnitCost;
-                updateItem.SKUTotalValue = editItemViewModel.QuantityOnHand * editItemViewModel.UnitCost;
                 updateItem.Supplier = context.Suppliers.Single(s => s.ID == editItemViewModel.SupplierID);
 
                 context.Update(updateItem);
@@ -115,6 +119,28 @@ namespace InventoryManager.Controllers
             }
 
             return View(editItemViewModel);
+        }
+
+        public IActionResult MarkDiscontinued()
+        {
+            ViewBag.title = "Mark Discontined";
+            IList<Item> items = context.Items.Where(i => i.Discontinued == false).ToList();
+            return View(items);
+        }
+
+        [HttpPost]
+        public IActionResult MarkDiscontinued(int[] itemIds)
+        {
+            foreach (int itemId in itemIds)
+            {
+                Item theItem = context.Items.Single(i => i.ID == itemId);
+                theItem.Discontinued = true;
+                context.Update(theItem);
+            }
+
+            context.SaveChanges();
+
+            return Redirect("/Item");
         }
 
         public IActionResult DeleteMultiple()

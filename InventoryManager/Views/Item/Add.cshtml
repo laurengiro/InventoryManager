@@ -29,6 +29,7 @@
         <select asp-for="SupplierID" asp-items="Model.Suppliers"></select>
     </div>
 
-    <input type="submit" value="Add Item" />
+    <input type="submit" value="Add Item" class="btn btn-primary" />
+    <a asp-controller="Item" asp-action="Index" class="btn btn-danger">Cancel</a>
 
 </form>
