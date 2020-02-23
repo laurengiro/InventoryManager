@@ -44,8 +44,15 @@ namespace InventoryManager
                     policy => policy.AddRequirements(new ManageItemAccessRequirement()));
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AccessSalePolicy",
+                    policy => policy.AddRequirements(new ManageSaleAccessRequirement()));
+            });
+
             services.AddSingleton<IAuthorizationHandler, CanViewOnlyCompanysItemsHandler>();
-            
+            services.AddSingleton<IAuthorizationHandler, CanViewOnlyCompanysSalesHandler>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

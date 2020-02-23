@@ -12,6 +12,7 @@ namespace InventoryManager.Data
     {
         public DbSet<Item> Items { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Sale> Sales { get; set; }
 
         public InventoryManagerDbContext(DbContextOptions<InventoryManagerDbContext> options)
             : base(options)

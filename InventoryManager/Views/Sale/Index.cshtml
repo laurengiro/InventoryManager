@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using InventoryManager.Security
+@model List<InventoryManager.Models.Sale>
+@inject IAuthorizationService AuthorizationService
+
+<h1>@User.Claims.FirstOrDefault(c => c.Type == "Company").Value's Sales</h1>
+
+
+@if (Model.Count > 0)
+{
+    <h3>Sales</h3>
+    <table class="table">
+
+        <tr>
+            <th>Date</th>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Units Sold</th>
+        </tr>
+
+
+        @{
+            var requirement = new ManageSaleAccessRequirement();
+            foreach (var sale in Model)
+            {
+                var authorizationResult = await AuthorizationService.AuthorizeAsync(User, sale, requirement);
+                if (authorizationResult.Succeeded)
+                {
+                    <tr>
+                        <td>@sale.Date</td>
+                        <td>@sale.Item.SKU</td>
+                        <td>@sale.Item.Description</td>
+                        <td>@sale.UnitsSold</td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+}
+
+
+@if (Model.Count == 0)
+{
+    <p>No sales yet!</p>
+}
+
+<p><a asp-controller="Sale" asp-action="Add" class="btn btn-primary">Add Sales</a></p>
