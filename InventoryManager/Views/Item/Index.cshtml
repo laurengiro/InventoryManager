@@ -44,6 +44,14 @@
                 }
             }
         }
+        <tr>
+            <td colspan="2"><strong>Total (Active Items)</strong></td>
+            <td><strong>@Model.Where(i => i.Discontinued == false).Select(i => i.QuantityOnHand).ToList().Sum()</strong></td>
+            <td></td>
+            <td><strong>@string.Format("{0:C}", Model.Where(i => i.Discontinued == false).Select(i => i.SKUTotalValue).ToList().Sum())</strong></td>
+            <td></td>
+            <td></td>
+        </tr>
     </table>
     <p><a asp-controller="Item" asp-action="MarkDiscontinued" class="btn btn-warning">Mark Item(s) Discontinued</a></p>
 }
@@ -86,6 +94,14 @@
                 }
             }
         }
+        <tr>
+            <td colspan="2"><strong>Total (Discontinued Items)</strong></td>
+            <td><strong>@Model.Where(i => i.Discontinued == true).Select(i => i.QuantityOnHand).ToList().Sum()</strong></td>
+            <td></td>
+            <td><strong>@string.Format("{0:C}", Model.Where(i => i.Discontinued == true).Select(i => i.SKUTotalValue).ToList().Sum())</strong></td>
+            <td></td>
+            <td></td>
+        </tr>
     </table>
 }
 
